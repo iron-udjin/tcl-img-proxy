@@ -1,0 +1,91 @@
+#!/bin/sh
+
+# PROVIDE: image
+# REQUIRE: DAEMON
+# BEFORE: LOGIN
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name=image
+rcvar=image_enable
+
+load_rc_config $name
+
+: ${image_enable:="NO"}
+: ${image_addr:="localhost"}
+: ${image_port:="8080"}
+: ${image_img_root_prefix:=""}
+: ${image_script:="tcl-img-proxy.tcl"}
+: ${image_user:="www"}
+: ${image_group:="www"}
+: ${image_log_file:="/var/log/tcl-img-proxy.log"}
+: ${image_log_level:="0"}
+: ${image_converter_bin:="/usr/local/bin/magick"}
+: ${image_disable_async_send:="0"}
+: ${image_converter_timeout:="10"}
+
+start_cmd="image_start"
+start_precmd="image_start_precmd"
+stop_cmd="image_stop"
+restart_cmd="image_restart"
+reload_cmd="image_reload_cmd"
+extra_commands="reload"
+
+required_dirs="${image_img_root_prefix}"
+required_files="${image_script}"
+pidfile="/var/run/${name}.pid"
+
+tclsh="/usr/local/bin/tclsh8.6"
+command="/usr/sbin/daemon"
+command_args="-u ${image_user} -P ${pidfile} -p ${pidfile}.child -t ${name} ${tclsh} ${image_script} -addr ${image_addr} -port ${image_port} -log_level ${image_log_level} -log_file ${image_log_file} -converter_bin ${image_converter_bin} -disable_async_send ${image_disable_async_send} -converter_timeout ${image_converter_timeout} -img_root_prefix ${image_img_root_prefix}"
+
+image_start_precmd()
+{
+	if [ ! -e "${pidfile}" ]; then
+		install -m 0600 -o ${image_user} -g ${image_group} /dev/null ${pidfile}
+		install -m 0600 -o ${image_user} -g ${image_group} /dev/null ${pidfile}.child
+	fi
+	if [ ! -f ${image_log_file} ]; then
+		install -o ${image_user} -g ${image_group} -m 640 /dev/null ${image_log_file}
+	fi
+}
+
+
+image_start()
+{
+	${command} ${command_args}
+}
+
+
+image_reload_cmd()
+{
+	if [ -z "$rc_pid" ]; then
+		_run_rc_notrunning
+		return 1
+	else
+		pkill -HUP -P ${rc_pid}
+	fi
+}
+
+image_stop()
+{
+        rc_pid=$(check_pidfile ${pidfile} ${command})
+        if [ $rc_pid ]; then
+                rc_pid_child=$(cat ${pidfile}.child)
+                kill $rc_pid_child
+                pwait -t 180 $rc_pid
+        else
+                _run_rc_notrunning
+                return 1
+        fi
+}
+
+image_restart()
+{
+	image_stop
+	image_start
+
+}
+
+run_rc_command "$1"
