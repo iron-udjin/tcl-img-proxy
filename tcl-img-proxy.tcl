@@ -6,7 +6,7 @@ package require aes
 # define default paramenets
 set addr "localhost"
 set port 8080
-# default images root prefix is home directory
+# default images root prefix is current directory
 set img_root_prefix {./}
 if {[lindex $tcl_platform(os) 0] eq "Windows"} {
     set converter_bin "magick.exe"
@@ -108,7 +108,7 @@ for {set i 0} {$i<$argc} {incr i} {
     incr i
 }
 
-# defune allowed values of image conversion
+# define allowed values of image conversion
 set params {
     w {
         allow {150 320 420 630 640 900 1200 1280 1600 1920}
@@ -130,7 +130,7 @@ if {$img_root_prefix eq {./}} {
 }
 
 # if log to file is enabled - check if we can write to file
-if {$log_level} {
+if {$log_level == 1} {
     if [catch {set log_chan [open $log_file a] } error] {
         puts stderr "Could not open $log_file for writing: $error"
         exit 1
