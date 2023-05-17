@@ -1,5 +1,5 @@
 # TCL Image Proxy
-TCL Image Proxy is an application written in TCL that utilizes the `magick` console command from [ImageMgick](https://imagemagick.org) as its conversion backend.
+The TCL Image Proxy is an application written in TCL that utilizes the `magick` console command from [ImageMgick](https://imagemagick.org) as its conversion backend.
 
 ### Description
 The "TCL Image Proxy" allows you to retain only the original image on the website. All other versions of the image will be generated on-demand and cached by [Nginx](https://nginx.org/) or any other application with proxy/cache functionality.
@@ -137,7 +137,7 @@ Path: /usr/local/etc/ImageMagick-7/policy.xml
 - sometimes, security vulnerabilities are discovered in ImageMagick. Therefore, it is important to always use the latest stable version
 - it is a good practice (if feasible) to place ImageMagick within an isolated environment and utilize it from there.
 
-### proxy settings and optimization for high load
+### Proxy settings and optimization for high load
 In the `nginx_proxy.conf` you can find sample `nginx` configuration. All that you need is to change `server_name` and `root` parameters and possibly change `proxy_cache_path` locatio (`/tmpfs` by default). Nginx Proxy caches images for 1 day by default (`inactive=24h` config option). If an image wasn't requested within a day - it will be removed from cache.
 
 To create proxy cache storage in [tmpfs](https://en.wikipedia.org/wiki/Tmpfs), run as root: `mkdir /tmpfs` and add following line in `/etc/fstab`:
