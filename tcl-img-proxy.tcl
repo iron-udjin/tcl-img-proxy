@@ -115,7 +115,7 @@ set params {
         cmd_param { -resize ${in_param_value}x}
     }
     q {
-        allow {75 85 90}
+        allow {75 80 85 90}
         cmd_param { -quality ${in_param_value}}
     }
     f {

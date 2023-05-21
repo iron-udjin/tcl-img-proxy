@@ -46,8 +46,8 @@ Example: http://localhost:8080/test.jpg?w=640&q=85&f=webp - This URL will conver
 
 ### Command line options
 ```
-Usage: ./image_converter.tcl <params> or tclsh ./image_converter.tcl <params>
-Example: tclsh ./image_converter.tcl -addr 127.0.0.1 -port 8080 -img_root_prefix /tmp/images
+Usage: ./tcl-img-proxy.tcl <params> or tclsh ./tcl-img-proxy.tcl <params>
+Example: tclsh ./tcl-img-proxy.tcl -addr 127.0.0.1 -port 8080 -img_root_prefix /tmp/images
 
 -addr: Listen address (IP or hostname). Default: localhost.
 -port: Listen port. Default: 8080.
@@ -55,7 +55,7 @@ Example: tclsh ./image_converter.tcl -addr 127.0.0.1 -port 8080 -img_root_prefix
     0 - disable (default)
     1 - log to file
     2 - log to stdout only (useful for debugging).
--log_file: File to store logs. Default: /tmp/image_converter.log.
+-log_file: File to store logs. Default: /tmp/tcl-img-proxy.log.
 -img_root_prefix: Image root directory or URL prefix. Default: current directory (In Windows can be differ)
 -converter_bin: Path to the `converter` program. Default: magick (without absolute path).
 -aes_enc_key: Key for AES hash decryption.
@@ -91,7 +91,7 @@ set params {
         cmd_param { -resize ${in_param_value}x}
     }   
     q { 
-        allow {75 85 90} 
+        allow {75 80 85 90} 
         cmd_param { -quality ${in_param_value}}
     }   
     f { 
@@ -100,7 +100,7 @@ set params {
     }   
 }
 ```
-`params` is a TCL [dictionary](https://www.tcl.tk/man/tcl/TclCmd/dict.html). You can add/edit/remove formats (`f` block), width (`w` block) and quality (`q` block). `cmd_param` - what will be added as command line option to `magick` command.
+`params` is a TCL [dictionary](https://www.tcl.tk/man/tcl/TclCmd/dict.html). You can add/edit/remove formats (`f` block), width (`w` block) and quality (`q` block). `cmd_param` - what will be added as command line option to `magick` command. Note: the formats has to be supported by ImageMagick. Check: `magick identify -list format`.
 
 ### External image storage
 To use any storage accessible by HTTP(s) simple add URL prefix to `-img_root_prefix` command line parameter.
@@ -116,7 +116,7 @@ It will be available: http://localhost:8080/storage/2023/05/12/test.jpg?w=640&q=
 <policy domain="coder" rights="read" pattern="HTTP" />
 ```
 The file is usually located: `/etc/ImageMagick-7/policy.xml` in Linux and `/usr/local/etc/ImageMagick-7/policy.xml` in FreeBSD.
-To make sure that everything is fine, run in the console: `identify -list policy`
+To make sure that everything is fine, run in the console: `magick identify -list policy`
 ```
 Path: /usr/local/etc/ImageMagick-7/policy.xml
 ...
