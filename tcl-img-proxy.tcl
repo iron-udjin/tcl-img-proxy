@@ -129,6 +129,8 @@ if {$img_root_prefix eq {./}} {
     puts "Worning: you didn't set -img_root_prefix <PATH> paramener. img_root_prefix will be used as current dirrectory: [file normalize $img_root_prefix]"
 }
 
+set img_root_prefix [file normalize $img_root_prefix]
+
 # if log to file is enabled - check if we can write to file
 if {$log_level == 1} {
     if [catch {set log_chan [open $log_file a] } error] {
@@ -260,8 +262,15 @@ proc handle_input {chan} {
         set file_absolute_path "$img_root_prefix[lindex [split $url {?}] 0]"
     } else {
         # local file absolute path
-        set file_absolute_path "[file normalize $img_root_prefix][lindex [split $url {?}] 0]"
+        set file_absolute_path "[file normalize $img_root_prefix[lindex [split $url {?}] 0]]"
     }
+
+    # make sure that the requested file is in allowed path
+    if {![string match "$img_root_prefix/*" $file_absolute_path]} {
+        return_404 $chan "$url Error: file isn't in allowed path"
+        return
+    }
+
     # make sure that the file exists and we didn't hit an error before
     if {![file exists $file_absolute_path] && $is_img_prefix_url == 0} {
         return_404 $chan "$url Error: file $file_absolute_path does not exist"
