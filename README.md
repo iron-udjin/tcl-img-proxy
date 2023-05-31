@@ -37,7 +37,7 @@ Example: http://localhost:8080/test.jpg?w=640&q=85&f=webp - This URL will conver
 - lightweight
 - without extra dependencies (only tcl and ImageMagick)
 - async socket request processing based on [chan event](https://www.tcl.tk/man/tcl/TclCmd/chan.html#M24) in non-blocking mode
-- async read `magick` command output and hadnle `stdout` and `stderr` separately in non-blocking mode
+- async read `magick` command output and handle `stdout` and `stderr` separately in non-blocking mode
 - fully async and non-blocking logger with separate message queue which runs only when `event loop` is idle (see: [after idle](https://www.tcl.tk/man/tcl/TclCmd/after.html#M9))
 - generates [`Etag`](https://en.wikipedia.org/wiki/HTTP_ETag) header (based on `md5` from predefined entropy sources)
 - sets correct [`Content-type`](https://en.wikipedia.org/wiki/Media_type) and `Last-Modified` headers
