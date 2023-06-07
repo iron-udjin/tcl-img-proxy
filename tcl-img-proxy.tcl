@@ -129,7 +129,9 @@ if {$img_root_prefix eq {./}} {
     puts "Worning: you didn't set -img_root_prefix <PATH> paramener. img_root_prefix will be used as current dirrectory: [file normalize $img_root_prefix]"
 }
 
-set img_root_prefix [file normalize $img_root_prefix]
+if {!$is_img_prefix_url} {
+    set img_root_prefix [file normalize $img_root_prefix]
+}
 
 # if log to file is enabled - check if we can write to file
 if {$log_level == 1} {
